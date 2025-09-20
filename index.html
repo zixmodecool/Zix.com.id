@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TikTok Downloader</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    /* Video background */
+    .video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 420px;
+      text-align: center;
+      background: rgba(0,0,0,0.6);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      margin: auto;
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #fff;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+      color: #ffeb3b;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      background: linear-gradient(90deg, #ff3cac, #784ba0, #2b86c5);
+      color: white;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .sound-btn {
+      margin-top: 15px;
+      background: #4caf50;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 0.95rem;
+      color: #eee;
+      word-wrap: break-word;
+    }
+
+    .result a {
+      display: block;
+      margin-top: 12px;
+      padding: 10px;
+      background: #4caf50;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+
+    .credit {
+      margin-top: 25px;
+      font-size: 0.8rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Video background -->
+  <video class="video-bg" id="bgVideo" autoplay muted loop>
+    <source src="https://files.catbox.moe/paawkz.mp4" type="video/mp4">
+    Browser kamu tidak mendukung video.
+  </video>
+
+  <div class="container">
+    <h1>Download Video TikTok</h1>
+    <input type="text" id="videoUrl" placeholder="Tempel tautan video TikTok di sini">
+    <button onclick="downloadVideo()">Download</button>
+    <button class="sound-btn" onclick="toggleSound()">🔊 ON / OFF Suara</button>
+    <div class="result" id="result"></div>
+    <div class="credit">Downloader versi Zix</div>
+  </div>
+
+  <script>
+    async function downloadVideo() {
+      const url = document.getElementById("videoUrl").value;
+      const result = document.getElementById("result");
+
+      if (!url) {
+        result.innerHTML = "⚠️ Masukkan URL TikTok dulu!";
+        return;
+      }
+
+      result.innerHTML = "⏳ Memproses...";
+
+      try {
+        const response = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(url)}`);
+        const data = await response.json();
+
+        if (data.data && data.data.play) {
+          result.innerHTML = `
+            ✅ Video ditemukan!<br>
+            Judul: ${data.data.title}<br>
+            <a href="${data.data.play}" target="_blank">Download Tanpa Watermark</a>
+            <a href="${data.data.wmplay}" target="_blank">Download Dengan Watermark</a>
+            <a href="${data.data.music}" target="_blank">Download Musik</a>
+          `;
+        } else {
+          result.innerHTML = `❌ Gagal: Tidak ada hasil dari API`;
+        }
+      } catch (err) {
+        result.innerHTML = "⚠️ Error koneksi ke API.";
+      }
+    }
+
+    // Tombol kontrol suara
+    function toggleSound() {
+      const video = document.getElementById("bgVideo");
+      video.muted = !video.muted;
+    }
+  </script>
+</body>
+</html>
